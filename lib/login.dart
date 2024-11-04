@@ -81,8 +81,8 @@ class _LoginPageState extends State<LoginPage> {
               // Image positioned at the top of the form
               Image.asset(
                 'lib/images/icons/icon.png', // Corrected file path
-                height: 150, // Image height
-                width: 150, // Set a specific width to keep the image smaller
+                height: 200, // Image height
+                width: 200, // Set a specific width to keep the image smaller
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(Icons.error, size: 40);
@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextField(
                       controller: _emailController,
                       decoration: const InputDecoration(
-                        hintText: "User Name",
+                        hintText: "Email",
                         hintStyle: TextStyle(color: Colors.grey),
                         border: OutlineInputBorder(),
                       ),

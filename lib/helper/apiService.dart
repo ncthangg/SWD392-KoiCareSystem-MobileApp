@@ -36,15 +36,15 @@ class ApiService {
     final token = await getToken();
     if (token.isNotEmpty) {
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-      String role = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ?? 'role is null';
-    return role == 'admin';
+      String role = decodedToken["r"] ?? 'role is null';
+    return role == 'Admin';
     }
     return false;
   }
 
    Future<Map<String, dynamic>> getUserInfo() async {
      email = await _storage.read(key: "email") ?? '';
-     userId = int.tryParse(await _storage.read(key: "userId") ?? '') ?? -1; // Giả định -1 là không hợp lệ
+     userId = int.tryParse(await _storage.read(key: "userId") ?? '') ?? -1;
      role = await _storage.read(key: "role") ?? '';
 
      return {

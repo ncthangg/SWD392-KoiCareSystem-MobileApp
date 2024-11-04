@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 // Navigate to the homepage logic without showing back button
-                Navigator.pushReplacementNamed(context, '/'); // Adjust route to match defined routes
+                Navigator.pushReplacementNamed(context, '/home'); // Adjust route to match defined routes
               },
               child: Row(
                 children: [
