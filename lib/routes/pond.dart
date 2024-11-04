@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:koicaresystem/routes/waterstatus.dart';
 import 'package:koicaresystem/services/pondService.dart';
 import '../helper/apiService.dart';
 
@@ -63,8 +64,16 @@ class _PondPageState extends State<PondPage> {
         itemCount: _pondList.length,
         itemBuilder: (context, index) {
           final pond = _pondList[index];
-
-          return Card(
+          return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => WaterStatusPage(pond: pond), // Chuyển sang trang WaterStatusPage
+                  ),
+                );
+              },
+          child: Card(
             margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +133,7 @@ class _PondPageState extends State<PondPage> {
                 ),
               ],
             ),
-          );
+          ));
         },
       ),
     );
