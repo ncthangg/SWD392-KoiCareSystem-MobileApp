@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'login.dart'; // Nhớ nhập khẩu file login.dart
 import 'home.dart'; // Adjust the import as needed
+import 'routes/koifish.dart'; // Import your koifish page
+import 'routes/pond.dart'; // Import your pond page
+//import 'routes/shop.dart'; // Import your shop page
 
 void main() {
   runApp(MyApp());
@@ -14,13 +17,18 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/', // Start at the home route
+      initialRoute: '/login', // Start at the home route
       routes: {
-        '/': (context) => HomePage(), // Home route
+        '/login': (context) => LoginPage(), // Trang đăng nhập
+        '/home': (context) => HomePage(), // Trang chính
+        '/koifish': (context) => KoiFishPage(), // KoiFish page
+        '/pond': (context) => PondPage(), // Pond page
+        '/shop': (context) => HomePage(), // Shop page
       },
       onUnknownRoute: (settings) {
-        return MaterialPageRoute(builder: (context) => HomePage()); // Fallback route
+        return MaterialPageRoute(builder: (context) => LoginPage()); // Fallback route
       }, // Trang khởi đầu là trang đăng nhập
+      debugShowCheckedModeBanner: false, // Tắt tag debug
     );
   }
 }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'helper/apiservice.dart';
+import 'helper/apiService.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class HomePage extends StatelessWidget {
+  final FlutterSecureStorage storage = FlutterSecureStorage();
+  final ApiService _apiService = ApiService();
   @override
   Widget build(BuildContext context) {
-    final apiService = ApiService();
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -54,7 +57,7 @@ class HomePage extends StatelessWidget {
                     child: Opacity(
                       opacity: 0.6,
                       child: Image.asset(
-                        'lib/assets/images/background/background1.jpg',
+                        'lib/images/background/background1.jpg',
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -99,20 +102,20 @@ class HomePage extends StatelessWidget {
                   _buildCard(
                     context,
                     'Quản lý Cá Koi',
-                    'lib/assets/images/using/fish.jpg',
-                    '/Member/KoiFishPages/Index',
+                    'lib/images/using/fish.jpg',
+                    '/koifish', // Navigate to the koifish page
                   ),
                   _buildCard(
                     context,
                     'Quản lý Hồ',
-                    'lib/assets/images/using/pond.jpg',
-                    '/Member/WaterParameters/Detail',
+                    'lib/images/using/pond.jpg',
+                    '/pond',
                   ),
                   _buildCard(
                     context,
                     'Cửa Hàng',
-                    'lib/assets/images/using/store.jpg',
-                    '/Member/Shop/Main',
+                    'lib/images/using/store.jpg',
+                    '/shop',
                   ),
                   // Add more cards if needed
                 ],
@@ -134,22 +137,36 @@ class HomePage extends StatelessWidget {
               context,
               'Hướng dẫn chăm sóc cá Koi',
               'Những bước cơ bản để bắt đầu chăm sóc cá Koi tại nhà.',
-              'lib/assets/images/using/phattrien.jpg',
-              '/Blog/Guide',
+              'lib/images/using/phattrien.jpg',
+              '/home',
             ),
             _buildArticleCard(
               context,
               'Cách duy trì chất lượng nước trong hồ',
               'Lời khuyên về cách giữ nước sạch và ổn định cho cá Koi.',
-              'lib/assets/images/using/water.jpg',
-              '/Blog/WaterQuality',
+              'lib/images/using/water.jpg',
+              '/home',
             ),
             _buildArticleCard(
               context,
-              'Dinh dưỡng cho cá Koi',
-              'Các loại thức ăn và chế độ dinh dưỡng phù hợp cho cá Koi.',
-              'lib/assets/images/using/nutrition.jpg',
-              '/Blog/Nutrition',
+              'Phòng ngừa bệnh cho cá Koi',
+              'Những cách để bảo vệ cá Koi khỏi các loại bệnh thường gặp.',
+              'lib/images/using/disease.png',
+              '/home',
+            ),
+            _buildArticleCard(
+              context,
+              'Thiết lập hồ cá Koi',
+              'Những điều cần lưu ý khi xây dựng hồ cá Koi tại nhà.',
+              'lib/images/using/pondsetup.jpg',
+              '/home',
+            ),
+            _buildArticleCard(
+              context,
+              'Bảo trì hồ cá Koi',
+              'Các bước cơ bản để bảo trì hồ cá Koi một cách hiệu quả.',
+              'lib/images/using/maintenance.jpg',
+              '/home',
             ),
           ],
         ),
@@ -157,6 +174,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  // Existing _buildCard function
   Widget _buildCard(BuildContext context, String title, String imagePath, String route) {
     return GestureDetector(
       onTap: () {
@@ -232,7 +250,13 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _showUserMenu(BuildContext context) {
+  void _showUserMenu(BuildContext context) async {
+    // Lấy token từ storage
+    final userInfo = await _apiService.getUserInfo();
+    String? email = userInfo['email'];
+    int? userId = userInfo['userId'] as int?;
+    String? role = userInfo['role'];
+
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -244,17 +268,41 @@ class HomePage extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.info),
                 title: Text('Xem thông tin người dùng'),
-                onTap: () {
-                  // Logic to view user info
-                  Navigator.pop(context); // Đóng menu sau khi chọn
+                onTap: () async {
+                  // Hiển thị thông tin người dùng
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Thông tin người dùng'),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Email: $email'),
+                            Text('Role: $role'),
+                          ],
+                        ),
+                        actions: [
+                          TextButton(
+                            child: Text('Đóng'),
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Đóng dialog
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  Navigator.pop(context); // Đóng menu sau khi dialog đã đóng
                 },
               ),
               ListTile(
                 leading: Icon(Icons.logout),
                 title: Text('Đăng xuất'),
-                onTap: () {
-                  // Logic to log out
-                  Navigator.pop(context); // Đóng menu sau khi chọn
+                onTap: () async {
+                  await storage.delete(key: "auth_token"); // Xóa token
+                  Navigator.of(context).pushReplacementNamed('/login'); // Chuyển hướng về trang đăng nhập
                 },
               ),
             ],
@@ -263,4 +311,6 @@ class HomePage extends StatelessWidget {
       },
     );
   }
+
+
 }

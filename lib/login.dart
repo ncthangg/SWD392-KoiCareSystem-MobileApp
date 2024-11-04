@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'home.dart';
+import '../helper/apiService.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final ApiService _apiService = ApiService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _storage = FlutterSecureStorage();
@@ -26,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       HttpOverrides.global = MyHttpOverrides();
 
       final response = await http.post(
-        Uri.parse('https://10.0.2.2:7237/api/koi-care-system/login'), // Thay thế bằng URL API của bạn
+        Uri.parse('https://10.0.2.2:7237/authenticate/login'), // Thay thế bằng URL API của bạn
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'email': _emailController.text,
@@ -40,9 +42,9 @@ class _LoginPageState extends State<LoginPage> {
 
         // Lưu token vào Secure Storage
         await _storage.write(key: "auth_token", value: token);
-
         print("Token saved: $token");
-        // Xử lý kết quả thành công và điều hướng đến trang chính
+        await _apiService.initializeFromToken();
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
@@ -59,42 +61,123 @@ class _LoginPageState extends State<LoginPage> {
       print('Error: $e');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('Login'),
-            ),
-            if (_errorMessage != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                  _errorMessage!,
-                  style: TextStyle(color: Colors.red),
+      body: Container(
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF73F1FF), Color(0xFF73F1FF)],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              // Image positioned at the top of the form
+              Image.asset(
+                'lib/images/icons/icon.png', // Corrected file path
+                height: 150, // Image height
+                width: 150, // Set a specific width to keep the image smaller
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(Icons.error, size: 40);
+                },
+              ),
+              const SizedBox(height: 20),
+              // Login form container
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20), // Reduced vertical padding
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.8,
+                  maxHeight: MediaQuery.of(context).size.height * 0.6, // Adjusted height constraint to make it shorter
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color.fromRGBO(27, 146, 225, 0.3),
+                      blurRadius: 20,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Text(
+                      "Login",
+                      style: TextStyle(color: Colors.black, fontSize: 40),
+                    ),
+                    const SizedBox(height: 10), // Reduced spacing
+                    TextField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        hintText: "User Name",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 10), // Reduced spacing
+                    TextField(
+                      controller: _passwordController,
+                      decoration: const InputDecoration(
+                        hintText: "Password",
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(),
+                      ),
+                      obscureText: true,
+                    ),
+                    const SizedBox(height: 10), // Reduced spacing
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          // Handle "Forget Password" functionality
+                        },
+                        child: const Text(
+                          "Forget Password?",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20), // Reduced spacing
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.lightBlue,
+                      ),
+                      child: GestureDetector(
+                        onTap: _login,
+                        child: const Center(
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
+
 
 }
 class MyHttpOverrides extends HttpOverrides {
