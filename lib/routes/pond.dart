@@ -82,7 +82,7 @@ class _PondPageState extends State<PondPage> {
                 Image.asset(
                   'lib${pond['imageUrl']}', // Sử dụng đường dẫn tương đối
                   //'lib/images/ponds/7d4bcd71-e606-45de-aa49-68a97e270ed3_ho1.jpg',
-                  height: 150, // Chiều cao hình ảnh
+                  height: 300, // Chiều cao hình ảnh
                   fit: BoxFit.cover,
                   width: double.infinity, // Chiếm toàn bộ chiều rộng
                   errorBuilder: (context, error, stackTrace) {
