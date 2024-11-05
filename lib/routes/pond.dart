@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:koicaresystem/routes/waterstatus.dart';
 import 'package:koicaresystem/services/pondService.dart';
 import '../helper/apiService.dart';
@@ -64,6 +65,10 @@ class _PondPageState extends State<PondPage> {
         itemCount: _pondList.length,
         itemBuilder: (context, index) {
           final pond = _pondList[index];
+          final creationDate = pond['createdAt'] != null
+              ? DateFormat('yyyy-MM-dd').format(DateTime.parse(pond['createdAt']))
+              : 'Unknown Date';
+
           return GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -95,12 +100,21 @@ class _PondPageState extends State<PondPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Tên hồ
-                      Text(
-                        pond['pondName'] ?? 'Unknown',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            pond['pondName'] ?? 'Unknown',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Text(
+                            creationDate,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 8),
                       // Kích thước hồ
