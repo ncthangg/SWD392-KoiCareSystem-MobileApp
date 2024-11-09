@@ -123,7 +123,7 @@ class _PondPageState extends State<PondPage> {
                         style: TextStyle(color: Colors.grey),
                       ),
                       Text(
-                        "Depth: ${pond['depth']} m²",
+                        "Depth: ${pond['depth']} m",
                         style: TextStyle(color: Colors.grey),
                       ),
                       Text(

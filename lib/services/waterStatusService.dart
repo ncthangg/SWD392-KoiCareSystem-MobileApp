@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../helper/apiService.dart';
 
 class WaterStatusService {
-  final String baseUrl = 'https://10.0.2.2:7237/waterstatus'; // Sửa lại URL cho đúng
+  final String baseUrl = 'http://10.0.2.2:5000/waterstatus'; // Sửa lại URL cho đúng
   final FlutterSecureStorage storage = FlutterSecureStorage();
   final ApiService _apiService = ApiService();
 

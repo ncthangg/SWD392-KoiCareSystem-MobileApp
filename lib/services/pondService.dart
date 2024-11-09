@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../helper/apiService.dart';
 
 class PondService {
-  final String baseUrl = 'https://10.0.2.2:7237/pond'; // Replace with your API URL
+  final String baseUrl = 'http://10.0.2.2:5000/pond'; // Replace with your API URL
   final FlutterSecureStorage storage = FlutterSecureStorage();
   final ApiService _apiService = ApiService();
 
@@ -16,8 +16,6 @@ class PondService {
     );
 
     if (response.statusCode == 200) {
-      // In ra nội dung response.body
-      print('Response Body: ${response.body}');
       final responseData = jsonDecode(response.body);
 
       if (responseData.containsKey('\$values')) {
@@ -28,8 +26,6 @@ class PondService {
         throw Exception('Response does not contain \$values key');
       }
     } else {
-      print('Response Status: ${response.statusCode}');
-      print('Response Body: ${response.body}');
       throw Exception('Failed to load user fish data: ${response.reasonPhrase}');
     }
   }
@@ -45,8 +41,6 @@ class PondService {
       );
 
       if (response.statusCode == 200) {
-        // In ra nội dung response.body
-        print('Response Body: ${response.body}');
         final responseData = jsonDecode(response.body);
 
         if (responseData.containsKey('\$values')) {
@@ -57,12 +51,9 @@ class PondService {
           throw Exception('Response does not contain \$values key');
         }
       } else {
-        print('Response Status: ${response.statusCode}');
-        print('Response Body: ${response.body}');
         throw Exception('Failed to load user fish data: ${response.reasonPhrase}');
       }
     } catch (error) {
-      print('Error: $error');
       throw Exception('Error fetching pond data: $error');
     }
   }

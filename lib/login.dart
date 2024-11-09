@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       HttpOverrides.global = MyHttpOverrides();
 
       final response = await http.post(
-        Uri.parse('https://10.0.2.2:7237/authenticate/login'), // Thay thế bằng URL API của bạn
+        Uri.parse('http://10.0.2.2:5000/authenticate/login'), // Thay thế bằng URL API của bạn
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
           'email': _emailController.text,
@@ -42,7 +42,6 @@ class _LoginPageState extends State<LoginPage> {
 
         // Lưu token vào Secure Storage
         await _storage.write(key: "auth_token", value: token);
-        print("Token saved: $token");
         await _apiService.initializeFromToken();
 
         Navigator.pushReplacement(

@@ -13,7 +13,7 @@ class ApiService {
     final token = await _storage.read(key: "auth_token");
 
     final response = await http.get(
-      Uri.parse("http://10.0.2.2:7237/authenticate"),
+      Uri.parse("http://10.0.2.2:5000/authenticate"),
       headers: {
         "Content-Type": "application/json",
         "Authorization": "Bearer $token",
@@ -66,10 +66,6 @@ class ApiService {
       await _storage.write(key: "email", value: email);
       await _storage.write(key: "userId", value: userId.toString());
       await _storage.write(key: "role", value: role);
-      // In ra giá trị đã lưu
-      print("Stored Email: $email");
-      print("Stored User ID: $userId");
-      print("Stored Role: $role");
     }
   }
 }
